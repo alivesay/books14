@@ -6,6 +6,7 @@ Commands related to syncing copytext from Google Docs.
 
 from fabric.api import task
 from termcolor import colored
+from re import search
 
 import app_config
 from etc.gdocs import GoogleDoc
@@ -21,9 +22,7 @@ def update():
     else:
         doc = {}
         url = app_config.COPY_GOOGLE_DOC_URL
-        bits = url.split('key=')
-        bits = bits[1].split('&')
-        doc['key'] = bits[0]
+        doc['key'] = search('(spreadsheets\/d\/|key=)(.*)(\/|&)', url).group(2)
 
         g = GoogleDoc(**doc)
         g.get_auth()
